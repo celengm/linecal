@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,13 +7,27 @@
 <body>
   <h2>LINE Redirect OK</h2>
   <p>Access token:</p>
-  <pre id="token">Memuat...</pre>
+  <pre id="token">Mengambil...</pre>
 
   <script>
     const hash = window.location.hash;
     const params = new URLSearchParams(hash.slice(1));
     const token = params.get("access_token");
-    document.getElementById("token").textContent = token || "Token tidak ditemukan di URL.";
+    document.getElementById("token").textContent = token || "Token tidak ditemukan.";
+
+    // Kirim token ke server Flask
+    if (token) {
+      fetch("http://10.24.159.117:8080/save_token", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ token })
+      })
+      .then(res => res.text())
+      .then(msg => console.log("Server:", msg))
+      .catch(err => console.error("Gagal kirim token:", err));
+    }
   </script>
 </body>
 </html>
